@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Text Editor </title>
+  
+
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .editor-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .toolbar button, .toolbar select {
+            margin: 5px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .toolbar button:hover, .toolbar select:hover {
+            background-color: #e0e0e0;
+        }
+
+        .editor {
+            padding: 20px;
+            height: 300px;
+            overflow-y: auto;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .editor[contenteditable="true"]:empty:before {
+            content: attr(placeholder);
+            color: #999;
+        }
+
+        .editor ol, .editor ul {
+            font-size: inherit;
+        }
+    </style>
+</head>
+<body>
+
+<div class="editor-container">
+    <div class="toolbar">
+        <button title="Bold" onclick="execCmd('bold')"><i class="fas fa-bold"></i></button>
+        <button title="Italic" onclick="execCmd('italic')"><i class="fas fa-italic"></i></button>
+        <button title="Underline" onclick="execCmd('underline')"><i class="fas fa-underline"></i></button>
+        <button title="Align Left" onclick="execCmd('justifyLeft')"><i class="fas fa-align-left"></i></button>
+        <button title="Align Center" onclick="execCmd('justifyCenter')"><i class="fas fa-align-center"></i></button>
+        <button title="Align Right" onclick="floatRight()"><i class="fas fa-align-right"></i></button>
+        <button title="Ordered List" onclick="execCmd('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+        <button title="Unordered List" onclick="execCmd('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+        <button title="Insert Link" onclick="insertLink()"><i class="fas fa-link"></i></button>
+        <select title="Font Family" onchange="execCmd('fontName', this.value)">
+            <option value="Arial">Arial</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+        </select>
+        <select title="Font Size" onchange="execCmd('fontSize', this.value)">
+            <option value="1">8px</option>
+            <option value="2">10px</option>
+            <option value="3" selected>12px</option>
+            <option value="4">14px</option>
+            <option value="5">18px</option>
+            <option value="6">24px</option>
+            <option value="7">36px</option>
+        </select>
+    </div>
+    <div class="editor" contenteditable="true" placeholder="Start typing here..."></div>
+</div>
+
+<script>
+    function execCmd(command, value = null) {
+        document.execCommand(command, false, value);
+    }
+
+    function floatRight() {
+        const editor = document.querySelector('.editor');
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const content = range.cloneContents();
+            const container = document.createElement('div');
+            container.appendChild(content);
+            container.style.cssFloat = 'right';
+            container.style.direction = 'rtl';
+            range.deleteContents();
+            range.insertNode(container);
+            const lists = container.querySelectorAll('ol, ul');
+            lists.forEach(list => {
+                list.style.direction = 'rtl';
+            });
+
+            const newRange = document.createRange();
+            newRange.selectNodeContents(container);
+            newRange.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+        }
+    }
+
+    function insertLink() {
+        const url = prompt("Enter the URL");
+        if (url) {
+            execCmd('createLink', url);
+        }
+    }
+</script>
+
+</body>
+</html>
+  
+</body>
+</html>
